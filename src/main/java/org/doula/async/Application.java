@@ -1,6 +1,6 @@
-package pl.org.sbolimowski.async;
+package org.doula.async;
 
-import pl.org.sbolimowski.async.api.AsyncResource;
+import org.doula.async.api.AsyncResource;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

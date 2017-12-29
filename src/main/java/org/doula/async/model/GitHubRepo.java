@@ -1,4 +1,4 @@
-package pl.org.sbolimowski.async.model;
+package org.doula.async.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

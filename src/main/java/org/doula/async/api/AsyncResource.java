@@ -1,15 +1,15 @@
-package pl.org.sbolimowski.async.api;
+package org.doula.async.api;
 
+import org.doula.async.core.FacebookService;
+import org.doula.async.core.GitHubService;
+import org.doula.async.model.GitHubRepo;
+import org.doula.async.model.GitHubUser;
+import org.doula.async.model.UserInfo;
+import org.doula.async.utils.Futures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
-import pl.org.sbolimowski.async.core.FacebookService;
-import pl.org.sbolimowski.async.model.GitHubRepo;
-import pl.org.sbolimowski.async.utils.Futures;
-import pl.org.sbolimowski.async.core.GitHubService;
-import pl.org.sbolimowski.async.model.FacebookUser;
-import pl.org.sbolimowski.async.model.GitHubContributor;
-import pl.org.sbolimowski.async.model.GitHubUser;
-import pl.org.sbolimowski.async.model.UserInfo;
+import org.doula.async.model.FacebookUser;
+import org.doula.async.model.GitHubContributor;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
 
-@Path("/")
+@Path("/api")
 public class AsyncResource {
 
     @Autowired
@@ -48,10 +48,8 @@ public class AsyncResource {
         CompletableFuture<FacebookUser> facebookFuture = Futures.toCompletable(facebookService.getUserAsync(user), executor);
 
         gitHubFuture
-                .thenCombine(
-                        facebookFuture, (g, f) -> new UserInfo(f, g))
-                .thenApply(
-                        info -> asyncResponse.resume(info))
+                .thenCombine(facebookFuture, (g, f) -> new UserInfo(f, g))
+                .thenApply(info -> asyncResponse.resume(info))
                 .exceptionally(
                         e -> asyncResponse.resume(Response.status(INTERNAL_SERVER_ERROR).entity(e).build()));
 
@@ -66,16 +64,12 @@ public class AsyncResource {
     @Produces(MediaType.APPLICATION_JSON)
     public void contributorsAsync(@Suspended AsyncResponse asyncResponse, @PathParam("user") String user) {
         Futures.toCompletable(gitHubService.reposAsync(user), executor)
-                .thenCompose(
-                        repos -> getContributors(user, repos))
-                .thenApply(
-                        contributors -> contributors.flatMap(list -> list.stream()))
-                .thenApply(
-                        contributors -> contributors.collect(Collectors.groupingBy(
-                                c -> c.getLogin(),
+                .thenCompose(repos -> getContributors(user, repos))
+                .thenApply(contributors -> contributors.flatMap(List::stream))
+                .thenApply(contributors -> contributors.collect(Collectors.groupingBy(
+                                GitHubContributor::getLogin,
                                 Collectors.counting())))
-                .thenApply(
-                        contributors -> asyncResponse.resume(contributors))
+                .thenApply(contributors -> asyncResponse.resume(contributors))
                 .exceptionally(
                         e -> asyncResponse.resume(Response.status(INTERNAL_SERVER_ERROR).entity(e).build())
                 );

@@ -1,14 +1,15 @@
-package pl.org.sbolimowski.async.core;
+package org.doula.async.core;
 
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.springframework.stereotype.Service;
-import pl.org.sbolimowski.async.model.GitHubContributor;
-import pl.org.sbolimowski.async.model.GitHubRepo;
-import pl.org.sbolimowski.async.model.GitHubUser;
-import pl.org.sbolimowski.async.utils.OkHttpResponseFuture;
+import org.doula.async.model.GitHubContributor;
+import org.doula.async.model.GitHubRepo;
+import org.doula.async.model.GitHubUser;
+import org.doula.async.utils.OkClient;
+import org.doula.async.utils.OkHttpResponseFuture;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -19,6 +20,8 @@ import java.util.concurrent.Future;
 
 @Service
 public class GitHubService {
+
+    OkClient
 
     private final WebTarget target = ClientBuilder.newClient().target("https://api.github.com/");
 

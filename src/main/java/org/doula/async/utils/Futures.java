@@ -1,6 +1,7 @@
-package pl.org.sbolimowski.async.utils;
+package org.doula.async.utils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
@@ -21,11 +22,10 @@ public class Futures {
     }
 
     public static <T> CompletableFuture<Stream<T>> sequence(Stream<CompletableFuture<T>> futures) {
-        List<CompletableFuture<T>> futureList = futures.filter(f -> f != null).collect(Collectors.toList());
+        List<CompletableFuture<T>> futureList = futures.filter(Objects::nonNull).collect(Collectors.toList());
         CompletableFuture<Void> allDoneFuture =
                 CompletableFuture.allOf(futureList.toArray(new CompletableFuture[futureList.size()]));
-        return allDoneFuture.thenApply(v ->
-                        futureList.stream().map(future -> future.join())
+        return allDoneFuture.thenApply(v -> futureList.stream().map(CompletableFuture::join)
         );
     }
 }

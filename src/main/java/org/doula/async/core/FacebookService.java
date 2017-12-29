@@ -1,7 +1,7 @@
-package pl.org.sbolimowski.async.core;
+package org.doula.async.core;
 
 import org.springframework.stereotype.Component;
-import pl.org.sbolimowski.async.model.FacebookUser;
+import org.doula.async.model.FacebookUser;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;

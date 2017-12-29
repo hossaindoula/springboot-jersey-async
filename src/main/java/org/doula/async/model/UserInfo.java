@@ -1,4 +1,4 @@
-package pl.org.sbolimowski.async.model;
+package org.doula.async.model;
 
 public class UserInfo {
     private final GitHubUser gitHubUser;
