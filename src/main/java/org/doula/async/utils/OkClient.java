@@ -1,5 +1,6 @@
 package org.doula.async.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +17,11 @@ import java.util.concurrent.CompletableFuture;
  * https://github.com/hossaindoula
  */
 @Component
-public class OkClient {
+public class OkClient<T> {
 
     private final OkHttpClient client = new OkHttpClient();
 
-    public CompletableFuture<Map<Object, Object>> asyncCall(String url) throws RuntimeException {
+    public CompletableFuture<T> asyncCall(String url, T entity) throws RuntimeException {
         OkHttpResponseFuture callback = new OkHttpResponseFuture();
         Request request = new Request.Builder().url(url).build();
 
@@ -28,7 +29,8 @@ public class OkClient {
 
         return callback.future.thenApply(response -> {
             try {
-                return ImmutableMap.of("response", response);
+                ObjectMapper mapper = new ObjectMapper();
+                return mapper.readValue(response.body().bytes(), <T>.class);
             } catch (Exception e) {
                 throw new RuntimeException("");
             } finally {

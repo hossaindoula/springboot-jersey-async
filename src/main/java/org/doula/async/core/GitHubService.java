@@ -14,11 +14,11 @@ public class GitHubService {
 
     private final String target = "https://api.github.com/";
 
-    private Future<Map<Object, Object>> userAsync(String user) {
+    public Future<Map<Object, Object>> userAsync(String user) {
         return okClient.asyncCall(target + "users" + "/" + user);
     }
 
-    private Future<Map<Object, Object>> reposAsync(String user) {
+    public Future<Map<Object, Object>> reposAsync(String user) {
         return okClient.asyncCall(target + "users" + "/" + user + "/" + "repos" );
     }
 
