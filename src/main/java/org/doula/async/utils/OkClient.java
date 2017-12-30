@@ -2,7 +2,6 @@ package org.doula.async.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
-import org.doula.async.model.CResource;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CompletableFuture;
@@ -21,6 +20,10 @@ public class OkClient<T> {
 
     private T entity;
 
+    private T getEntity() {
+        return this.entity;
+    }
+
     private final OkHttpClient client = new OkHttpClient();
 
     public CompletableFuture<? extends Object> asyncCall(String url) throws RuntimeException {
@@ -32,7 +35,7 @@ public class OkClient<T> {
         return callback.future.thenApply(response -> {
             try {
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(response.body().bytes(), entity.getClass());
+                return mapper.readValue(response.body().bytes(), getEntity().getClass());
             } catch (Exception e) {
                 throw new RuntimeException("");
             } finally {
