@@ -6,6 +6,8 @@ import org.doula.async.model.GitHubUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.doula.async.utils.OkClient;
+
+import java.util.List;
 import java.util.concurrent.Future;
 
 @Service
@@ -24,11 +26,11 @@ public class GitHubService {
         return (Future<GitHubUser>)gitHubUserOkClient.asyncCall(target + "users" + "/" + user);
     }
 
-    public Future<GitHubUser> reposAsync(String user) {
-        return (Future<GitHubUser>)gitHubRepoOkClient.asyncCall(target + "users" + "/" + user + "/" + "repos" );
+    public Future<List<GitHubRepo>> reposAsync(String user) {
+        return (Future<List<GitHubRepo>>)gitHubRepoOkClient.asyncCall(target + "users" + "/" + user + "/" + "repos" );
     }
 
-    public Future<GitHubUser> contributorsAsync(String owner, String repo) {
-        return (Future<GitHubUser>)gitHubContributorOkClient.asyncCall("/repos/" + owner + "/" + repo + "/" + "contributors");
+    public Future<List<GitHubContributor>> contributorsAsync(String owner, String repo) {
+        return (Future<List<GitHubContributor>>)gitHubContributorOkClient.asyncCall("/repos/" + owner + "/" + repo + "/" + "contributors");
     }
 }
