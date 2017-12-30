@@ -1,8 +1,6 @@
 package org.doula.async.utils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Mohammed Hossain Doula
@@ -13,16 +11,16 @@ import java.util.Map;
  * <p>
  * https://github.com/hossaindoula
  */
-public class ImmutableMap {
+public class ImmutableMap<K, V> extends HashMap<K, V> {
 
-    public static Map<Object, Object> of(Object key, Object value){
-        return Collections.unmodifiableMap(new HashMap<Object, Object>(){{
+    public static <K, V> Map<K, V> of(K key, V value){
+        return Collections.unmodifiableMap(new HashMap<K, V>(){{
             put(key, value);
         }});
     }
 
-    public static Map<Object, Object> of(Object key1, Object value1, Object key2, Object value2){
-        return Collections.unmodifiableMap(new HashMap<Object, Object>(){{
+    public static <K, V> Map<K, V> of(K key1, V value1, K key2, V value2){
+        return Collections.unmodifiableMap(new HashMap<K, V>(){{
             put(key1, value1);
             put(key2, value2);
         }});
@@ -56,5 +54,4 @@ public class ImmutableMap {
             put(key5, value5);
         }});
     }
-
 }

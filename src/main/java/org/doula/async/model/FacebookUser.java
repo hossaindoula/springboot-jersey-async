@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class FacebookUser {
+public class FacebookUser extends CResource {
     private final String name;
     private final String username;
     private final String locale;

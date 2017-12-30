@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class GitHubUser {
+public class GitHubUser extends CResource {
     private final String login;
     private final String type;
     private final String name;
