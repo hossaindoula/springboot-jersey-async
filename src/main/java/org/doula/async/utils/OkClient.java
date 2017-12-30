@@ -18,11 +18,7 @@ import java.util.concurrent.CompletableFuture;
 @Component
 public class OkClient<T> {
 
-    private T entity;
-
-    private T getEntity() {
-        return this.entity;
-    }
+    private T entity = null;
 
     private final OkHttpClient client = new OkHttpClient();
 
@@ -35,7 +31,7 @@ public class OkClient<T> {
         return callback.future.thenApply(response -> {
             try {
                 ObjectMapper mapper = new ObjectMapper();
-                return mapper.readValue(response.body().bytes(), getEntity().getClass());
+                return mapper.readValue(response.body().bytes(), this.entity.getClass());
             } catch (Exception e) {
                 throw new RuntimeException("");
             } finally {
