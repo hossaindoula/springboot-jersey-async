@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.doula.async.model.FacebookUser;
 import org.doula.async.model.GitHubContributor;
+import org.springframework.stereotype.Component;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,7 +29,8 @@ import java.util.stream.Stream;
 import static javax.ws.rs.core.Response.Status.INTERNAL_SERVER_ERROR;
 import static javax.ws.rs.core.Response.Status.SERVICE_UNAVAILABLE;
 
-@Path("/api")
+@Path("/")
+@Component
 public class AsyncResource {
 
     @Autowired
@@ -67,8 +69,8 @@ public class AsyncResource {
                 .thenCompose(repos -> getContributors(user, repos))
                 .thenApply(contributors -> contributors.flatMap(List::stream))
                 .thenApply(contributors -> contributors.collect(Collectors.groupingBy(
-                                GitHubContributor::getLogin,
-                                Collectors.counting())))
+                        GitHubContributor::getLogin,
+                        Collectors.counting())))
                 .thenApply(contributors -> asyncResponse.resume(contributors))
                 .exceptionally(
                         e -> asyncResponse.resume(Response.status(INTERNAL_SERVER_ERROR).entity(e).build())
@@ -81,3 +83,4 @@ public class AsyncResource {
     }
 
 }
+

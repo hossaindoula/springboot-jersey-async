@@ -1,9 +1,10 @@
 package org.doula.async;
 
-import org.doula.async.api.AsyncResource;
-import org.glassfish.jersey.server.ResourceConfig;
+import org.glassfish.jersey.servlet.ServletContainer;
+import org.glassfish.jersey.servlet.ServletProperties;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.embedded.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,13 +14,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 @Configuration
 @ComponentScan
-@EnableAutoConfiguration
 @EnableAsync
-public class Application extends ResourceConfig  {
-
-    public Application() {
-        register(AsyncResource.class);
-    }
+@SpringBootApplication
+public class Application {
 
     @Bean
     public TaskExecutor asyncTaskExecutor() {

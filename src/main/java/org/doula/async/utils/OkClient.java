@@ -1,9 +1,12 @@
 package org.doula.async.utils;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -32,7 +35,9 @@ public class OkClient<T> {
             try {
                 ObjectMapper mapper = new ObjectMapper();
                 return mapper.readValue(response.body().bytes(), this.entity.getClass());
-            } catch (Exception e) {
+            } catch (JsonParseException | JsonMappingException e) {
+                throw new RuntimeException("");
+            } catch (IOException ex) {
                 throw new RuntimeException("");
             } finally {
                 response.close();
