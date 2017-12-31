@@ -16,21 +16,21 @@ public class GitHubService {
     @Autowired
     OkClient<GitHubUser> gitHubUserOkClient;
     @Autowired
-    OkClient<GitHubContributor> gitHubContributorOkClient;
+    OkClient<List<GitHubContributor>> gitHubContributorOkClient;
     @Autowired
-    OkClient<GitHubRepo> gitHubRepoOkClient;
+    OkClient<List<GitHubRepo>> gitHubRepoOkClient;
 
     private final String target = "https://api.github.com/";
 
     public Future<GitHubUser> userAsync(String user) {
-        return (Future<GitHubUser>)gitHubUserOkClient.asyncCall(target + "users" + "/" + user);
+        return gitHubUserOkClient.asyncCall(target + "users" + "/" + user);
     }
 
     public Future<List<GitHubRepo>> reposAsync(String user) {
-        return (Future<List<GitHubRepo>>)gitHubRepoOkClient.asyncCall(target + "users" + "/" + user + "/" + "repos" );
+        return gitHubRepoOkClient.asyncCall(target + "users" + "/" + user + "/" + "repos" );
     }
 
     public Future<List<GitHubContributor>> contributorsAsync(String owner, String repo) {
-        return (Future<List<GitHubContributor>>)gitHubContributorOkClient.asyncCall("/repos/" + owner + "/" + repo + "/" + "contributors");
+        return gitHubContributorOkClient.asyncCall("/repos/" + owner + "/" + repo + "/" + "contributors");
     }
 }
