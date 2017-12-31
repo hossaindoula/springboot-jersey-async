@@ -3,6 +3,7 @@ package org.doula.async.utils;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;

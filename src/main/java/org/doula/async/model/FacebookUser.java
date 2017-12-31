@@ -7,27 +7,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class FacebookUser extends CResource {
     private final String name;
-    private final String username;
-    private final String locale;
+    private final String id;
 
     @JsonCreator
     public FacebookUser(@JsonProperty("name") String name,
-                        @JsonProperty("username") String username,
-                        @JsonProperty("locale") String locale) {
+                        @JsonProperty("id") String id) {
         this.name = name;
-        this.username = username;
-        this.locale = locale;
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public String getLocale() {
-        return locale;
+    public String getId() {
+        return id;
     }
 }

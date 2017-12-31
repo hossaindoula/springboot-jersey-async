@@ -1,5 +1,6 @@
 package org.doula.async.api;
 
+import org.apache.catalina.User;
 import org.doula.async.core.FacebookService;
 import org.doula.async.core.GitHubService;
 import org.doula.async.model.GitHubRepo;
@@ -7,6 +8,7 @@ import org.doula.async.model.GitHubUser;
 import org.doula.async.model.UserInfo;
 import org.doula.async.utils.Futures;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.doula.async.model.FacebookUser;
 import org.doula.async.model.GitHubContributor;
@@ -42,23 +44,26 @@ public class AsyncResource {
     @Autowired
     private TaskExecutor executor;
 
+    @Value("${fb.accessToken}")
+    private String facebookAccessToken;
+
     @GET
     @Path("/userInfo/{user}")
     @Produces(MediaType.APPLICATION_JSON)
-    public void userInfoAsync(@Suspended AsyncResponse asyncResponse, @PathParam("user") String user) {
+    public CompletableFuture<Boolean> userInfoAsync(@Suspended AsyncResponse asyncResponse, @PathParam("user") String user) {
         CompletableFuture<GitHubUser> gitHubFuture = Futures.toCompletable(gitHubService.userAsync(user), executor);
-        CompletableFuture<FacebookUser> facebookFuture = Futures.toCompletable(facebookService.getUserAsync(user), executor);
+        CompletableFuture<FacebookUser> facebookFuture = Futures.toCompletable(facebookService.getUserAsync(facebookAccessToken), executor);
 
-        gitHubFuture
-                .thenCombine(facebookFuture, (g, f) -> new UserInfo(f, g))
-                .thenApply(info -> asyncResponse.resume(info))
+        CompletableFuture<Boolean> a = gitHubFuture
+                .thenCombineAsync(facebookFuture, (g, f) -> new UserInfo(f, g))
+                .thenApplyAsync(info -> asyncResponse.resume(info))
                 .exceptionally(
                         e -> asyncResponse.resume(Response.status(INTERNAL_SERVER_ERROR).entity(e).build()));
 
         asyncResponse.setTimeout(1000, TimeUnit.MILLISECONDS);
         asyncResponse.setTimeoutHandler(
                 ar -> ar.resume(Response.status(SERVICE_UNAVAILABLE).entity("Operation timed out").build()));
-
+        return a;
     }
 
     @GET
